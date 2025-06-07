@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Form</title>
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+
+
+input[type=text], select, textarea {
+  width: 500px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+input[type=submit] {
+  background-color: #04AA6D;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  width: 500px;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+</style>
+</head>
+<body>
+
+<h3>Contact Form</h3>
+
+<div class="container">
+  <form action="https://api.web3forms.com/submit" method="POST">
+  <!-- Replace with your Access Key -->
+  <input type="hidden" name="access_key" value="a422a44a-e588-4fff-aacd-8baa27623bc3">
+  <!-- Custom Subject -->
+  <input type="hidden" name="subject" value="New Submission from Put Website Name Here">
+    <label for="fname">First Name</label>
+	<br>
+    <input type="text" id="fname" name="firstname" placeholder="Your name.." required>
+<br>
+    <label for="lname">Last Name</label>
+	<br>
+    <input type="text" id="lname" name="lastname" placeholder="Your last name.." required>
+<br>
+    <label for="country">Country</label>
+	<br>
+    <select id="country" name="country" required>
+      <option value="australia">Australia</option>
+      <option value="canada">Canada</option>
+      <option value="usa">USA</option>
+    </select>
+<br>
+    <label for="subject">Subject</label>
+	<br>
+    <textarea id="subject" name="subject" placeholder="Write something.." style="height:100px" required></textarea>
+	<!-- hCaptcha: Recommended for Advanced Spam Protection. -->
+    <div class="h-captcha" data-captcha="true"></div>
+	<!-- Custom Confirmation / Success Page -->
+    <input type="hidden" name="redirect" value="index.html">
+<br>
+    <input type="submit" value="Submit">
+  </form>
+</div>
+
+
+<!-- Add the Web3Forms script -->
+<script src="https://web3forms.com/client/script.js" async defer></script>
+</body>
+</html>
