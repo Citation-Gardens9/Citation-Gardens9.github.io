@@ -14,25 +14,31 @@
     <!-- Custom CSS for the '3 Col Portfolio' Template -->
     <link href="css/portfolio-item.css" rel="stylesheet">
 
-<style>
-#sort-by {
-  padding: 4px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1.2rem;
-  background-color: #fff;
-  /* optional custom arrow */
-  appearance: none;
-  background-image: url("data:image/svg+xml,…");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-}
-</style>	
-
+    <style>
+      #sort-by {
+        padding: 4px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1.2rem;
+        background-color: #fff;
+        /* optional custom arrow */
+        appearance: none;
+        background-image: url("data:image/svg+xml,…");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+      }
+      /* Spacing for #episode-list rows */
+      #episode-list .episode-card:nth-child(n+5) {
+        margin-top: 20px;
+      }
+      /* Spacing for placeholder rows below <hr> */
+      .container:nth-of-type(2) .row:nth-child(2) .episode-card {
+        margin-top: 20px;
+      }
+    </style>	
   </head>
 
   <body>
-
     <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -56,7 +62,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
-          <h1 class="page-header">All Episodes</h1>
+          <h1 class="page-header">All Episodes - 2025</h1>
 
           <!-- sort control -->
           <div style="margin:12px 0;">
@@ -71,9 +77,17 @@
 
       <!-- unified episode row -->
       <div id="episode-list" class="row">
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #8" align="center">
+          <a style="color:#333333" href="https://youtu.be/--hiWcHL6iQ" target="_blank">
+            <img class="img-responsive portfolio-item"
+                 src="./images/Citation Gardens 9 Podcast Episode 8.png"
+                 width="300" height="300">
+            <strong>Episode #8</strong>
+          </a>
+        </div>
 
         <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #7" align="center">
-          <a style="color:#333333" href="https://youtu.be/A5XTSOHKDPY" target="blank">
+          <a style="color:#333333" href="https://youtu.be/A5XTSOHKDPY" target="_blank">
             <img class="img-responsive portfolio-item"
                  src="./images/Citation Gardens 9 Podcast Episode 7.png"
                  width="300" height="300">
@@ -82,7 +96,7 @@
         </div>
 
         <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #6" align="center">
-          <a style="color:#333333" href="https://youtu.be/Kd8BDR1xcUQ" target="blank">
+          <a style="color:#333333" href="https://youtu.be/Kd8BDR1xcUQ" target="_blank">
             <img class="img-responsive portfolio-item"
                  src="./images/Citation Gardens 9 Podcast Episode 6.png"
                  width="300" height="300">
@@ -91,7 +105,7 @@
         </div>
 
         <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #5" align="center">
-          <a style="color:#333333" href="https://youtu.be/_diVrYdNKjk" target="blank">
+          <a style="color:#333333" href="https://youtu.be/_diVrYdNKjk" target="_blank">
             <img class="img-responsive portfolio-item"
                  src="./images/Citation Gardens 9 Podcast Episode 5.png"
                  width="300" height="300">
@@ -100,7 +114,7 @@
         </div>
 
         <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #4" align="center">
-          <a style="color:#333333" href="https://youtu.be/t80t0RDpDbw" target="blank">
+          <a style="color:#333333" href="https://youtu.be/t80t0RDpDbw" target="_blank">
             <img class="img-responsive portfolio-item"
                  src="./images/Citation Gardens 9 Podcast Episode 4.png"
                  width="300" height="300">
@@ -109,7 +123,7 @@
         </div>
 
         <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #3" align="center">
-          <a style="color:#333333" href="https://youtu.be/qllbBU6zgts" target="blank">
+          <a style="color:#333333" href="https://youtu.be/qllbBU6zgts" target="_blank">
             <img class="img-responsive portfolio-item"
                  src="./images/Citation Gardens 9 Podcast Episode 3.png"
                  width="300" height="300">
@@ -118,7 +132,7 @@
         </div>
 
         <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #2" align="center">
-          <a style="color:#333333" href="https://youtu.be/1i9WBgQpQos" target="blank">
+          <a style="color:#333333" href="https://youtu.be/1i9WBgQpQos" target="_blank">
             <img class="img-responsive portfolio-item"
                  src="./images/Citation Gardens 9 Podcast Episode 2.jpg"
                  width="300" height="300">
@@ -127,24 +141,76 @@
         </div>
 
         <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #1" align="center">
-          <a style="color:#333333" href="https://youtu.be/yU4_wighILY" target="blank">
+          <a style="color:#333333" href="https://youtu.be/yU4_wighILY" target="_blank">
             <img class="img-responsive portfolio-item"
                  src="./images/Citation Gardens 9 Podcast Episode 1.png"
                  width="300" height="300">
             <strong>Episode #1</strong>
           </a>
         </div>
-
-        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder 2" align="center">
-          <img class="img-responsive portfolio-item"
-               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
-               width="300" height="300">
-          <strong>Placeholder</strong>
-        </div>
       </div><!-- /#episode-list -->
     </div><!-- /.container -->
 
-    <hr>
+    <hr><br><!-- /mew set of 2 rows below here -->
+
+    <div class="container">
+      <!-- Duplicate First Row (Placeholders) -->
+      <div class="row">
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
+          <img class="img-responsive portfolio-item"
+               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
+               width="300" height="300">
+          <strong>Coming Soon</strong>
+        </div>
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
+          <img class="img-responsive portfolio-item"
+               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
+               width="300" height="300">
+          <strong>Coming Soon</strong>
+        </div>
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
+          <img class="img-responsive portfolio-item"
+               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
+               width="300" height="300">
+          <strong>Coming Soon</strong>
+        </div>
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
+          <img class="img-responsive portfolio-item"
+               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
+               width="300" height="300">
+          <strong>Coming Soon</strong>
+        </div>
+      </div>
+
+      <!-- Duplicate Second Row (Placeholders) -->
+      <div class="row">
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
+          <img class="img-responsive portfolio-item"
+               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
+               width="300" height="300">
+          <strong>Coming Soon</strong>
+        </div>
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
+          <img class="img-responsive portfolio-item"
+               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
+               width="300" height="300">
+          <strong>Coming Soon</strong>
+        </div>
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
+          <img class="img-responsive portfolio-item"
+               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
+               width="300" height="300">
+          <strong>Coming Soon</strong>
+        </div>
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
+          <img class="img-responsive portfolio-item"
+               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
+               width="300" height="300">
+          <strong>Coming Soon</strong>
+        </div>
+      </div>
+    </div><!-- /.container -->
+
     <div class="container">
       <footer>
         <div class="row">
@@ -159,61 +225,55 @@
     <script src="js/jquery-1.10.2.js"></script>
     <script src="js/bootstrap.js"></script>
 
-<!-- sorting script (replace your old one with this) -->
-<script>
-  (function() {
-    const list   = document.getElementById('episode-list');
-    const select = document.getElementById('sort-by');
+    <!-- Sorting script -->
+    <script>
+      (function() {
+        const list = document.getElementById('episode-list');
+        const select = document.getElementById('sort-by');
 
-    select.addEventListener('change', () => {
-      // 1) Grab each card’s starting rect
-      const cards = Array.from(list.children);
-      const firstPos = new Map(cards.map(card =>
-        [card, card.getBoundingClientRect()]
-      ));
+        select.addEventListener('change', () => {
+          // 1) Grab each card’s starting rect
+          const cards = Array.from(list.children);
+          const firstPos = new Map(cards.map(card =>
+            [card, card.getBoundingClientRect()]
+          ));
 
-      // 2) Perform your same sort logic
-      const [field, order] = select.value.split('-');
-      const isPlaceholder = c => /placeholder/i.test(c.dataset.title);
-      let real  = cards.filter(c => !isPlaceholder(c));
-      const pad = cards.filter(isPlaceholder);
+          // 2) Perform sort logic (only within #episode-list)
+          const [field, order] = select.value.split('-');
+          const isPlaceholder = c => /placeholder/i.test(c.dataset.title);
+          let real = cards.filter(c => !isPlaceholder(c));
+          const pad = cards.filter(isPlaceholder);
 
-      real.sort((a, b) => {
-        let va = a.dataset[field].toLowerCase();
-        let vb = b.dataset[field].toLowerCase();
-        if (va < vb) return order==='asc'? -1:1;
-        if (va > vb) return order==='asc'?  1:-1;
-        return 0;
-      });
-      const newOrder = real.concat(pad);
+          real.sort((a, b) => {
+            let va = a.dataset[field].toLowerCase();
+            let vb = b.dataset[field].toLowerCase();
+            if (va < vb) return order === 'asc' ? -1 : 1;
+            if (va > vb) return order === 'asc' ? 1 : -1;
+            return 0;
+          });
+          const newOrder = real.concat(pad);
 
-      // 3) Re-append in new order
-      newOrder.forEach(c => list.appendChild(c));
+          // 3) Re-append in new order to #episode-list
+          newOrder.forEach(c => list.appendChild(c));
 
-      // 4) FLIP: set each card back to its old spot
-      newOrder.forEach(card => {
-        const first = firstPos.get(card);
-        const last  = card.getBoundingClientRect();
-        const dx = first.left - last.left;
-        const dy = first.top  - last.top;
-        if (dx||dy) {
-          card.style.transition = 'none';
-          card.style.transform  = `translate(${dx}px,${dy}px)`;
-          // force a reflow so the browser sees the transform
-          card.getBoundingClientRect();
-          // then animate into new spot
-          card.style.transition = 'transform 300ms ease';
-          card.style.transform  = '';
-        }
-      });
-    });
-
-    // (optional) trigger once so if user lands with non-default sort, it animates
-    // select.dispatchEvent(new Event('change'));
-  })();
-</script>
-
-
+          // 4) FLIP: set each card back to its old spot
+          newOrder.forEach(card => {
+            const first = firstPos.get(card);
+            const last = card.getBoundingClientRect();
+            const dx = first.left - last.left;
+            const dy = first.top - last.top;
+            if (dx || dy) {
+              card.style.transition = 'none';
+              card.style.transform = `translate(${dx}px, ${dy}px)`;
+              // force a reflow so the browser sees the transform
+              card.getBoundingClientRect();
+              // then animate into new spot
+              card.style.transition = 'transform 300ms ease';
+              card.style.transform = '';
+            }
+          });
+        });
+      })();
+    </script>
   </body>
 </html>
-
