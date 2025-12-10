@@ -31,10 +31,6 @@
       #episode-list .episode-card:nth-child(n+5) {
         margin-top: 20px;
       }
-      /* Spacing for placeholder rows below <hr> */
-      .container:nth-of-type(2) .row:nth-child(2) .episode-card {
-        margin-top: 20px;
-      }
     </style>	
   </head>
 
@@ -53,7 +49,6 @@
         <div class="collapse navbar-collapse navbar-ex1-collapse">
           <ul class="nav navbar-nav">
             <li><a href="list.html">Episode List</a></li>
-            <!-- <li><a href="contact.html">Contact</a></li> -->
           </ul>
         </div>
       </div>
@@ -75,8 +70,38 @@
         </div>
       </div>
 
-      <!-- unified episode row -->
+      <!-- unified episode row - now holds all 12 real episodes -->
       <div id="episode-list" class="row">
+
+        <!-- NEWEST EPISODES ADDED HERE -->
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #12" align="center">
+          <a style="color:#333333" href="https://youtu.be/B1aDq8qwZbA" target="_blank">
+            <img class="img-responsive portfolio-item"
+                 src="./images/Citation Gardens 9 Podcast Episode 12.png"
+                 width="300" height="300">
+            <strong>Episode #12</strong>
+          </a>
+        </div>
+
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #11" align="center">
+          
+            <img class="img-responsive portfolio-item"
+                 src="./images/Citation Gardens 9 Podcast Episode 11.png"
+                 width="300" height="300">
+            <strong>Episode #11</strong>
+          
+        </div>
+
+        <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #10" align="center">
+          
+            <img class="img-responsive portfolio-item"
+                 src="./images/Citation Gardens 9 Podcast Episode 10.png"
+                 width="300" height="300">
+            <strong>Episode #10</strong>
+          
+        </div>
+
+        <!-- ORIGINAL EPISODES (unchanged order & formatting) -->
         <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #9" align="center">
           <a style="color:#333333" href="https://youtu.be/4J-h0L_RfQA" target="_blank">
             <img class="img-responsive portfolio-item"
@@ -148,14 +173,7 @@
             <strong>Episode #2</strong>
           </a>
         </div>
-      </div><!-- /#episode-list -->
-    </div><!-- /.container -->
 
-    <hr><br><!-- /new set of 2 rows below here -->
-
-    <div class="container">
-      <!-- First Row (Placeholders) -->
-      <div class="row">
         <div class="col-sm-3 col-xs-6 episode-card" data-title="Episode #1" align="center">
           <a style="color:#333333" href="https://youtu.be/yU4_wighILY" target="_blank">
             <img class="img-responsive portfolio-item"
@@ -164,60 +182,17 @@
             <strong>Episode #1</strong>
           </a>
         </div>
-        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
-          <img class="img-responsive portfolio-item"
-               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
-               width="300" height="300">
-          <strong>Coming Soon</strong>
-        </div>
-        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
-          <img class="img-responsive portfolio-item"
-               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
-               width="300" height="300">
-          <strong>Coming Soon</strong>
-        </div>
-        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
-          <img class="img-responsive portfolio-item"
-               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
-               width="300" height="300">
-          <strong>Coming Soon</strong>
-        </div>
-      </div>
 
-      <!-- Second Row (Placeholders) -->
-      <div class="row">
-        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
-          <img class="img-responsive portfolio-item"
-               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
-               width="300" height="300">
-          <strong>Coming Soon</strong>
-        </div>
-        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
-          <img class="img-responsive portfolio-item"
-               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
-               width="300" height="300">
-          <strong>Coming Soon</strong>
-        </div>
-        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
-          <img class="img-responsive portfolio-item"
-               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
-               width="300" height="300">
-          <strong>Coming Soon</strong>
-        </div>
-        <div class="col-sm-3 col-xs-6 episode-card" data-title="Placeholder" align="center">
-          <img class="img-responsive portfolio-item"
-               src="./images/Citation Gardens 9 Podcast - Place Holder.png"
-               width="300" height="300">
-          <strong>Coming Soon</strong>
-        </div>
-      </div>
+      </div><!-- /#episode-list -->
     </div><!-- /.container -->
+
+    <!-- Entire placeholder section deleted as requested -->
 
     <div class="container">
       <footer>
         <div class="row">
           <div class="col-lg-12">
-            <p>Copyright &copy; 2025 Citation Gardens #9</p>
+            <p>Copyright © 2025 Citation Gardens #9</p>
           </div>
         </div>
       </footer>
@@ -227,76 +202,66 @@
     <script src="js/jquery-1.10.2.js"></script>
     <script src="js/bootstrap.js"></script>
 
-    <!-- Sorting script -->
+    <!-- Simple, clean sorting script that works with any number of episodes -->
+    <!-- Sorting script with FLIP animation restored -->
     <script>
       (function() {
-        const list = document.getElementById('episode-list');
-        const placeholderRow = document.querySelector('.container:nth-of-type(2) .row:nth-child(1)');
-        const select = document.getElementById('sort-by');
+        const list    = document.getElementById('episode-list');
+        const select  = document.getElementById('sort-by');
 
-        // Store clones of all episodes and a placeholder
-        const episodeClones = {};
-        Array.from(list.children).forEach(card => {
-          episodeClones[card.dataset.title] = card.cloneNode(true);
-        });
-        Array.from(placeholderRow.children).forEach(card => {
-          if (!episodeClones[card.dataset.title]) {
-            episodeClones[card.dataset.title] = card.cloneNode(true);
-          }
-        });
+        // Store the original cards once
+        let originals = Array.from(list.children).map(card => card.cloneNode(true));
 
-        select.addEventListener('change', () => {
-          // 1) Store initial positions for FLIP animation
-          const cards = Array.from(list.children);
-          const firstPos = new Map(cards.map(card => [card.dataset.title, card.getBoundingClientRect()]));
-
-          // 2) Collect all episodes dynamically
-          const episodes = Object.keys(episodeClones)
-            .filter(title => title.startsWith('Episode #'))
-            .map(title => episodeClones[title].cloneNode(true));
-
-          // 3) Sort episodes
-          const [field, order] = select.value.split('-');
-          episodes.sort((a, b) => {
-            let va = a.dataset[field].match(/#(\d+)/) ? parseInt(a.dataset[field].match(/#(\d+)/)[1]) : 0;
-            let vb = b.dataset[field].match(/#(\d+)/) ? parseInt(b.dataset[field].match(/#(\d+)/)[1]) : 0;
-            return order === 'asc' ? va - vb : vb - va;
+        function sortAndAnimate() {
+          // 1. Remember old positions for FLIP
+          const oldCards = Array.from(list.children);
+          const oldPos   = new Map();
+          oldCards.forEach(card => {
+            oldPos.set(card.dataset.title, card.getBoundingClientRect());
           });
 
-          // 4) Update DOM based on sort order
-          list.innerHTML = ''; // Clear episode list
-          placeholderRow.innerHTML = ''; // Clear first placeholder row
+          // 2. Clone and sort the cards
+          let sorted = originals.map(c => c.cloneNode(true));
 
-          // Always take first 8 episodes for #episode-list, last one for placeholder
-          const listEpisodes = episodes.slice(0, Math.min(8, episodes.length));
-          const placeholderEpisode = episodes[episodes.length - 1];
+          const descending = select.value === 'title-desc';
+          sorted.sort((a, b) => {
+            const numA = parseInt(a.dataset.title.match(/#(\d+)/)[1]);
+            const numB = parseInt(b.dataset.title.match(/#(\d+)/)[1]);
+            return descending ? numB - numA : numA - numB;
+          });
 
-          listEpisodes.forEach(card => list.appendChild(card));
-          if (placeholderEpisode) {
-            placeholderRow.appendChild(placeholderEpisode.cloneNode(true));
-          }
-          for (let i = 0; i < 3; i++) {
-            placeholderRow.appendChild(episodeClones['Placeholder'].cloneNode(true));
-          }
+          // 3. Replace the content
+          list.innerHTML = '';
+          sorted.forEach(card => list.appendChild(card));
 
-          // 5) FLIP animation for #episode-list
+          // 4. FLIP animation
           const newCards = Array.from(list.children);
           newCards.forEach(card => {
-            const first = firstPos.get(card.dataset.title);
-            if (first) {
-              const last = card.getBoundingClientRect();
-              const dx = first.left - last.left;
-              const dy = first.top - last.top;
-              if (dx || dy) {
-                card.style.transition = 'none';
-                card.style.transform = `translate(${dx}px, ${dy}px)`;
-                card.getBoundingClientRect(); // Force reflow
-                card.style.transition = 'transform 300ms ease';
-                card.style.transform = '';
-              }
+            const oldRect = oldPos.get(card.dataset.title);
+            if (!oldRect) return;
+
+            const newRect = card.getBoundingClientRect();
+
+            const dx = oldRect.left - newRect.left;
+            const dy = oldRect.top  - newRect.top;
+
+            if (dx !== 0 || dy !== 0) {
+              card.style.transition = 'none';
+              card.style.transform = `translate(${dx}px, ${dy}px)`;
+
+              // force reflow
+              card.getBoundingClientRect();
+
+              card.style.transition = 'transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1)';
+              card.style.transform = '';
             }
           });
-        });
+        }
+
+        select.addEventListener('change', sortAndAnimate);
+
+        // initial sort (newest first) + animation on page load
+        sortAndAnimate();
       })();
     </script>
   </body>
