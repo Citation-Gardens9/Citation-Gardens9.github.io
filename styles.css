@@ -428,7 +428,7 @@
   #incidents .chart-wrapper h3 { margin-top: 4px; }
 
   #financial h2,
-  #subscribe h2 { margin-bottom: 4px; }
+  #subscribe h2 { margin-bottom: 0px; }
 
   #financial p:first-of-type,
   #subscribe p:first-of-type { margin-top: 4px; }
