@@ -635,7 +635,7 @@
   .section-slide {
     opacity: 0;
     transform: translateY(0px);
-    transition: opacity 2.0s ease, transform 1.2s ease;
+    transition: opacity 800ms ease-out, transform 800ms ease-out;
   }
 
   .section-slide.visible {
