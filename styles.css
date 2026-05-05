@@ -593,7 +593,7 @@
   .modal-actions button::before,
   .modal-actions button::after {
     position: relative;
-    top: -3px;          /* vertical alignment fix */
+    top: -2px;          /* vertical alignment fix */
     font-size: 1.4em;   /* visually balanced */
     line-height: 1;
     opacity: 0.9;
