@@ -122,7 +122,9 @@
 
       <div class="treasurer-summary-card">
         <p style="margin: 0;"><strong>
-          General Reserve: $106,475.18 • Operating Account: $20,598.10 • CD Account: $79,527.92
+          General Reserve: $<span class="countup" data-target="106475.18">0</span> •
+		  Operating Account: $<span class="countup" data-target="20598.10">0</span> •
+		  CD Account: $<span class="countup" data-target="79527.92">0</span>
         </strong></p>
       </div>
     </div>
@@ -379,6 +381,41 @@
   });
 
   </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const counters = document.querySelectorAll(".countup");
+  let hasAnimated = false;
+
+  const animate = (el) => {
+    const target = parseFloat(el.getAttribute("data-target"));
+    const duration = 2000;
+    const start = 0;
+    const startTime = performance.now();
+
+    const update = (now) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const value = start + (target - start) * progress;
+      el.textContent = value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      if (progress < 1) requestAnimationFrame(update);
+    };
+
+    requestAnimationFrame(update);
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !hasAnimated) {
+        counters.forEach(animate);
+        hasAnimated = true;
+      }
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(document.querySelector("#treasurer-summary"));
+});
+</script>
 
   <!-- ============================================================
        CHARTS — rewritten to use theme variables EXACTLY
