@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		"May 2026",
       ];
 
-      const lowData =    [1, 0, 1, 2, 3, 3, 2, 1];
+      const lowData =    [1, 0, 1, 2, 3, 3, 2, 2];
       const mediumData = [1, 1, 1, 3, 1, 0, 2, 0];
       const highData =   [0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -1022,6 +1022,64 @@ function flashMessage(el, text, type = "success") {
     }, 400);
   }, 3000);
 }
+</script>
+
+<script>
+// Enhanced Active Nav Link Handler
+document.addEventListener('DOMContentLoaded', () => {
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  function setActiveLink(link) {
+    navLinks.forEach(l => l.classList.remove('active'));
+    if (link) link.classList.add('active');
+  }
+
+  // Click handler
+  navLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      setActiveLink(this);
+    });
+  });
+
+  // Main function to highlight based on current URL/hash
+  function highlightCurrentPage() {
+    const currentHash = window.location.hash;
+
+    let activeSet = false;
+
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href');
+
+      // Home link (href="#' or href="" or href="index.html" etc.)
+      if ((href === '#' || href === '' || href === window.location.pathname) && !currentHash) {
+        setActiveLink(link);
+        activeSet = true;
+        return;
+      }
+
+      // Anchor links (#section)
+      if (currentHash && href.endsWith(currentHash)) {
+        setActiveLink(link);
+        activeSet = true;
+      }
+    });
+
+    // Fallback: highlight Home if nothing matches
+    if (!activeSet) {
+      const homeLink = Array.from(navLinks).find(link => 
+        link.getAttribute('href') === '#' || link.getAttribute('href') === ''
+      );
+      if (homeLink) setActiveLink(homeLink);
+    }
+  }
+
+  // Run on initial load
+  highlightCurrentPage();
+
+  // Important: Update when Back/Forward buttons are used
+  window.addEventListener('hashchange', highlightCurrentPage);
+  window.addEventListener('popstate', highlightCurrentPage);
+});
 </script>
 
 <!-- News Archive Modal -->
