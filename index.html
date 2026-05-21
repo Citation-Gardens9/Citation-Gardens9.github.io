@@ -6,9 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Citation Gardens #9 — Dispatches from the Realm</title>
 
+  <link rel="icon" href="images/favicon.png" type="image/png" sizes="64x64">
+  <link rel="stylesheet" href="styles.css">
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-  <link rel="stylesheet" href="styles.css">
 
 </head>
 
@@ -43,6 +44,7 @@
         <li><a href="#treasurer-summary">Financials</a></li>
         <li><a href="#incidents">Incidents</a></li>
         <li><a href="#remodel">Remodel Progress</a></li>
+		<li><a href="javascript:void(0)" id="polls-link">Polls</a></li>
         <li><a href="#subscribe">Subscribe</a></li>
       </ul>
 
@@ -71,6 +73,15 @@
 
       <!-- INDIVIDUAL NEWS ITEMS BELOW -->
 	  <p class="welcome-blurb archive-item">
+        <strong>🧾 Dispatch for May 21, 2026 — New Polls & Serveys</strong><br>
+        We’ve added a new Polls & Surveys section to the site.
+		<br>
+		This offers members a way to weigh in on questions put forth by the Board.
+		<br>
+		Please keep in mind that poll results serve as guidance, not binding decisions.
+      </p>
+
+	  <p class="welcome-blurb archive-item">
         <strong>🧾 Dispatch for May 19, 2026 — Meeting of the Board</strong><br>
         This is a reminder that our next combined Meeting of the Board will be Friday May 22, 2026 at 2:00 pm.
 		<br>
@@ -89,13 +100,6 @@
 		<br><br>
 		A temporary solar floodlight has been installed to illuminate the pool area.
 		Please use caution when walking on the sidewalks around the pool
-      </p>
-
-	  <p class="welcome-blurb archive-item">
-        <strong>🧾 Dispatch for May 5, 2026 — Mr. Electric (power interuption)</strong><br>
-        Katie at GNC spoke with Mr. Electric about possible power interuptions this Wednesday May 6, 2026.
-		They let her know that power to the pool and lights attached to the breaker panels would be
-		interruped, but wasn't sure about individual units.
       </p>
 
       <p class="welcome-blurb">
@@ -314,7 +318,7 @@
           name: 'Terri Lemberger',
           position: 'Member at Large - Term • Apr 2025 – Oct 2026',
           email: 'lemberger.terri@yahoo.com',
-          web: 'https://colide-o-scope.github.io'
+          web: 'https://www.colideoscope.com/'
         })">
           <img src="Images/Member-at-Large.jpg" alt="Terri Lemberger" title="Meadow Spirit — gentle guide of growth and voice of the living landscape">
           <p><strong>Terri Lemberger</strong><br>Member at Large</p>
@@ -670,6 +674,55 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   </script>
 
+
+<script>
+// ============================================================
+// COUNT VOTES
+// ============================================================
+function renderPollResults(poll) {
+  const totalVotes = Object.keys(poll.votes || {}).length;
+
+  // Count votes per option
+  const counts = {};
+  poll.options.forEach(opt => counts[opt.id] = 0);
+  Object.values(poll.votes || {}).forEach(optionId => {
+    if (counts[optionId] !== undefined) counts[optionId]++;
+  });
+
+  // Detect theme
+  const isDark = document.documentElement.classList.contains("dark");
+
+  const gradient = isDark
+    ? "linear-gradient(90deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06))"
+    : "linear-gradient(90deg, rgba(0,0,0,0.12), rgba(0,0,0,0.04))";
+
+  let html = `
+    <div class="poll-results-card">
+      <h2>${poll.title}</h2>
+      ${poll.description ? `<p style="color:var(--muted); margin-bottom:20px; white-space:pre-line;">${poll.description}</p>` : ""}
+      <p style="margin-bottom:20px; color:var(--muted);">Total votes: ${totalVotes}</p>
+  `;
+
+  poll.options.forEach(opt => {
+    const count = counts[opt.id];
+    const pct = totalVotes === 0 ? 0 : Math.round((count / totalVotes) * 100);
+
+    html += `
+      <div class="poll-option-row">
+        <div class="poll-option-label">${opt.text}</div>
+        <div class="poll-bar-container">
+          <div class="poll-bar-fill" style="width:${pct}%; background:${gradient};"></div>
+        </div>
+        <div class="poll-option-meta">${count} votes • ${pct}%</div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  return html;
+}
+</script>
+
 <!-- ============================================================
      NEWS ARCHIVE MODAL JAVASCRIPT
      ============================================================ -->
@@ -872,6 +925,525 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 
 <script>
+// ============================================================
+// POLLS & SURVEYS MODAL
+// ============================================================
+document.addEventListener("DOMContentLoaded", () => {
+  const pollsLink = document.getElementById("polls-link");
+  const pollsModal = document.getElementById("polls-modal");
+  const pollsBody = document.getElementById("polls-modal-body");
+  const pollsCloseBtn = pollsModal.querySelector(".modal-close");
+
+  const workerUrl = "https://polls.citationgardens9.workers.dev";
+
+if (pollsLink) {
+  pollsLink.addEventListener("click", async () => {
+    document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+    pollsLink.classList.add('active');
+
+    pollsBody.innerHTML = `<p style="text-align:center">Loading active polls...</p>`;
+    pollsModal.style.display = "flex";
+	
+	pollsModal.classList.add("preload");
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        pollsModal.classList.add("show");
+      });
+    });
+
+    try {
+      const res = await fetch(`${workerUrl}/api/polls`);
+      const data = await res.json();
+
+      let html = `
+        <div class="section">
+          <h2>Polls & Surveys</h2>
+          
+          <!-- Admin link inside the modal -->
+          <p style="text-align:center; margin: -15px 0 5px 0;">
+            <a href="#" id="admin-link" style="color:var(--accent); text-decoration:underline;">Admin Access →</a>
+          </p>
+
+          <p style="text-align:center; margin:0 0 5px 0; color:var(--muted);">
+            Matters Put Forth to the Realm
+          </p>
+		  
+		  <p style="text-align:center; font-style: italic; font-size: 14px; margin:0 0 15px 0; color:var(--muted);">
+		    These measures serve as counsel to the Guardians, offering insight but not decree.
+		  </p>`;
+
+      if (data.polls && data.polls.length > 0) {
+        html += `<div class="poll-list">`;
+        data.polls.forEach(poll => {
+          html += `
+            <div class="poll-item">
+              <strong>${poll.title}</strong>
+              ${poll.description ? `<p style="text-align:left; margin: 10px 0 15px 0; color:var(--muted); white-space:pre-line;">${poll.description}</p>` : ''}
+              <button onclick="loadSinglePoll('${poll.id}')">Vote Now</button>
+            </div>`;
+        });
+        html += `</div>`;
+      } else {
+        html += `<p style="text-align:center; color:var(--muted);">No active polls at the moment.<br>Check back soon!</p>`;
+      }
+
+      html += `</div>`;
+      pollsBody.innerHTML = html;
+	  
+	  // Reveal content smoothly after fade-in
+	  setTimeout(() => {
+	    pollsModal.classList.remove("preload");
+      }, 50);
+
+    } catch (e) {
+      pollsModal.classList.remove("preload");
+      pollsBody.innerHTML = `<p style="text-align:center; color:#e53935;">Unable to load polls right now.<br>Please try again later.</p>`;
+    }
+  });
+}
+
+  // Close modal handlers
+  pollsCloseBtn.addEventListener("click", closePollsModal);
+
+  window.addEventListener("click", (e) => {
+    if (e.target === pollsModal) closePollsModal();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && pollsModal.classList.contains("show")) {
+      closePollsModal();
+    }
+  });
+
+  function closePollsModal() {
+    pollsModal.classList.remove("show");
+    setTimeout(() => {
+      pollsModal.style.display = "none";
+    }, 850);
+  }
+});
+
+// ============================================================
+// LOAD SINGLE POLL + VOTING + RESULTS
+// ============================================================
+async function loadSinglePoll(pollId) {
+  const pollsBody = document.getElementById("polls-modal-body");
+  const pollsModal = document.getElementById("polls-modal");
+  const workerUrl = "https://polls.citationgardens9.workers.dev";
+
+  // Fade out current content before swapping
+  pollsModal.classList.add("preload");
+
+  // Wait for fade-out to finish (matches CSS 0.35s)
+  await new Promise(resolve => setTimeout(resolve, 150));
+
+  // If user already voted → show results immediately
+  if (localStorage.getItem(`voted_${pollId}`)) {
+    const res = await fetch(`${workerUrl}/api/poll/${pollId}`);
+    const poll = await res.json();
+    pollsBody.innerHTML = renderPollResults(poll);
+    pollsBody.classList.add('results-visible');
+
+    setTimeout(() => {
+      pollsModal.classList.remove("preload");
+    }, 50);
+
+    return;
+  }
+
+  // NOT VOTED YET — show loading text AFTER fade-out
+  pollsBody.innerHTML = `<p style="text-align:center">Loading poll...</p>`;
+
+  try {
+    const res = await fetch(`${workerUrl}/api/poll/${pollId}`);
+    const poll = await res.json();
+
+    let html = `
+      <div class="section">
+        <h2 style="margin-bottom:4px;">${poll.title}</h2>
+        ${poll.description ? `<p style="margin-top:0; text-align:left; color:var(--muted); white-space:pre-line;">${poll.description}</p>` : ''}
+        
+        <form id="poll-vote-form" style="max-width:520px; margin:25px auto 0;">
+          <input type="hidden" name="poll_id" value="${poll.id}">
+    `;
+
+    poll.options.forEach(opt => {
+      html += `
+        <label class="poll-option">
+          <input type="radio" name="option_id" value="${opt.id}" required>
+          ${opt.text}
+        </label>`;
+    });
+
+    html += `
+          <button type="submit" style="margin-top:25px;">Submit Vote</button>
+        </form>
+      </div>`;
+
+    pollsBody.innerHTML = html;
+
+    setTimeout(() => {
+      pollsModal.classList.remove("preload");
+    }, 50);
+
+    // Form submission
+    document.getElementById("poll-vote-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+
+      try {
+		
+        const response = await fetch(`${workerUrl}/api/vote`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            poll_id: formData.get("poll_id"),
+            option_id: parseInt(formData.get("option_id"))
+          })
+        });
+
+        if (response.ok) {
+          // Remember vote
+          localStorage.setItem(`voted_${pollId}`, "true");
+
+          // Load updated results
+          const res2 = await fetch(`${workerUrl}/api/poll/${pollId}`);
+          const updatedPoll = await res2.json();
+          pollsBody.innerHTML = renderPollResults(updatedPoll);
+		  pollsBody.classList.add('results-visible');
+		  
+          setTimeout(() => {
+            pollsModal.classList.remove("preload");
+          }, 50);
+		  
+        } else {
+          pollsModal.classList.remove("preload");
+          showNotice("🖋️ Your vote was already counted in the ledger.");
+        }
+      } catch (err) {
+	  pollsModal.classList.remove("preload");
+	  showNotice("🌀 The portal to the ether has closed. Try again when the skies are clear.");
+      }
+    });
+
+  } catch (e) {
+    pollsModal.classList.remove("preload");
+    pollsBody.innerHTML = `<p style="text-align:center; color:#e53935;">Error loading this poll.</p>`;
+  }
+}
+</script>
+
+<script>
+// ============================================================
+// POLLS MODAL FADE HELPERS (GLOBAL)
+// ============================================================
+// Put this block ABOVE document.addEventListener("DOMContentLoaded", ...)
+async function fadeOutModal() {
+  const pollsModal = document.getElementById("polls-modal");
+  if (!pollsModal) return; // safety guard
+  pollsModal.classList.add("preload");
+  await new Promise(resolve => setTimeout(resolve, 150));
+}
+
+function fadeInModal() {
+  const pollsModal = document.getElementById("polls-modal");
+  if (!pollsModal) return; // safety guard
+  setTimeout(() => pollsModal.classList.remove("preload"), 50);
+}
+
+// ============================================================
+// NEW ADMIN SYSTEM (inside Polls modal) — WITH FADE FIXES
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+  const workerUrl = "https://polls.citationgardens9.workers.dev";
+
+  // ------------------------------------------------------------
+  // ADMIN LINK CLICK HANDLER
+  // ------------------------------------------------------------
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "admin-link") {
+	  e.preventDefault();
+      openAdminLoginInModal();
+    }
+  });
+
+  // ------------------------------------------------------------
+  // LOGIN BUTTON HANDLER
+  // ------------------------------------------------------------
+  window.handleAdminLogin = () => {
+    const password = document.getElementById("admin-password").value.trim();
+    if (!password) return;
+
+    sessionStorage.setItem("adminPassword", password);
+    adminLogin(password);
+  };
+
+  // ------------------------------------------------------------
+  // ADMIN LOGIN → LOAD ADMIN PANEL
+  // ------------------------------------------------------------
+  window.adminLogin = async function(password) {
+    const modalBody = document.getElementById("polls-modal-body");
+
+    await fadeOutModal();
+
+    modalBody.innerHTML = `
+      <div class="admin-wrapper">
+        <p style="text-align:center">Authenticating...</p>
+      </div>
+    `;
+
+    fadeInModal();
+
+    try {
+      const res = await fetch(`${workerUrl}/admin/polls?pw=${encodeURIComponent(password)}`);
+      const text = await res.text();
+
+      if (!res.ok) {
+        await fadeOutModal();
+        modalBody.innerHTML = `
+          <div class="admin-wrapper">
+            <p style="color:#e53935; text-align:center">
+              Incorrect password.<br>Try again.
+            </p>
+          </div>
+        `;
+        fadeInModal();
+        return;
+      }
+
+      const data = JSON.parse(text);
+      showAdminPanel(data.polls, password);
+
+    } catch (err) {
+      await fadeOutModal();
+      modalBody.innerHTML = `
+        <div class="admin-wrapper">
+          <p style="color:#e53935; text-align:center">
+            Could not connect to the Worker.<br>
+            Check deployment.
+          </p>
+        </div>
+      `;
+      fadeInModal();
+    }
+  };
+
+  // ------------------------------------------------------------
+  // RENDER ADMIN PANEL
+  // ------------------------------------------------------------
+  window.showAdminPanel = async function(polls, password) {
+    const modalBody = document.getElementById("polls-modal-body");
+
+    await fadeOutModal();
+
+    let html = `
+      <div class="admin-wrapper">
+        <div class="section">
+          <h2>Polls Administration</h2>
+
+          <button class="themed-button"
+                  onclick="showCreatePollForm('${password}')"
+                  style="margin-bottom:20px;">
+            Create New Poll
+          </button>
+
+          <h3>Existing Polls</h3>
+    `;
+
+    if (polls && polls.length > 0) {
+      polls.forEach(poll => {
+        html += `
+          <div class="poll-item"
+               style="margin-bottom:25px; padding:20px; border:1px solid var(--border); border-radius:10px;">
+
+            <strong>${poll.title}</strong>
+            <span style="color:${poll.active ? '#22c55e' : '#e53935'};">
+              (${poll.active ? 'Active' : 'Closed'})
+            </span>
+
+            <p style="color:var(--muted); margin:-20px 0 15px 0; white-space:pre-line;">
+              ${poll.description || ''}
+            </p>
+
+            ${renderPollResults(poll)}
+
+            ${poll.active ? `
+              <button class="themed-button"
+                      onclick="closePoll(${poll.id}, '${password}')"
+                      style="background:#e53935; margin-top:10px;">
+                Close Poll
+              </button>
+            ` : ""}
+          </div>
+        `;
+      });
+    } else {
+      html += `<p>No polls yet.</p>`;
+    }
+
+    html += `
+        </div>
+      </div>
+    `;
+
+    modalBody.innerHTML = html;
+
+    fadeInModal();
+  };
+
+  // ------------------------------------------------------------
+  // CREATE POLL FORM
+  // ------------------------------------------------------------
+  window.showCreatePollForm = async (password) => {
+    const modalBody = document.getElementById("polls-modal-body");
+
+    await fadeOutModal();
+
+    modalBody.innerHTML = `
+      <div class="admin-wrapper">
+        <div class="section">
+          <h2>Create New Poll</h2>
+
+          <input type="text" id="new-poll-title"
+                 class="themed-input" placeholder="Poll Title">
+
+          <textarea id="new-poll-desc"
+                    class="themed-input"
+                    placeholder="Description (optional)"
+                    style="height:50px;"></textarea>
+
+          <p>Options (one per line):</p>
+
+          <textarea id="new-poll-options"
+                    class="themed-input"
+                    placeholder="Option 1&#10;Option 2&#10;Option 3"
+                    style="height:80px;"></textarea>
+
+          <button class="themed-button"
+                  onclick="createNewPoll('${password}')">
+            Create Poll
+          </button>
+
+          <br><br>
+
+          <button class="themed-button themed-cancel"
+                  onclick="adminLogin('${password}')">
+            Cancel
+          </button>
+        </div>
+      </div>
+    `;
+
+    fadeInModal();
+  };
+
+  // ------------------------------------------------------------
+  // CREATE POLL (POST)
+  // ------------------------------------------------------------
+  window.createNewPoll = async (password) => {
+    const title = document.getElementById("new-poll-title").value.trim();
+    const description = document.getElementById("new-poll-desc").value.trim();
+    const optionsText = document.getElementById("new-poll-options").value.trim();
+
+    if (!title || !optionsText) {
+      alert("Title and at least one option are required.");
+      return;
+    }
+
+    const options = optionsText.split('\n')
+                               .map(o => o.trim())
+                               .filter(o => o);
+
+    try {
+      const res = await fetch(`${workerUrl}/admin/create?pw=${encodeURIComponent(password)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, description, options })
+      });
+
+      if (!res.ok) {
+        const responseText = await res.text();
+        alert(`Failed to create poll.\nStatus: ${res.status}\nError: ${responseText}`);
+        return;
+      }
+
+      alert("Poll created successfully!");
+
+      const refreshRes = await fetch(`${workerUrl}/admin/polls?pw=${encodeURIComponent(password)}`);
+      const data = await refreshRes.json();
+      showAdminPanel(data.polls, password);
+
+    } catch (err) {
+      alert("Network error while creating poll.");
+    }
+  };
+
+  // ------------------------------------------------------------
+  // CLOSE POLL
+  // ------------------------------------------------------------
+  window.closePoll = async (pollId, password) => {
+    if (!confirm("Close this poll?")) return;
+
+    try {
+      await fetch(`${workerUrl}/admin/close?pw=${encodeURIComponent(password)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ poll_id: String(pollId) })
+      });
+
+      alert("Poll closed.");
+
+      const res = await fetch(`${workerUrl}/admin/polls?pw=${encodeURIComponent(password)}`);
+      const data = await res.json();
+      showAdminPanel(data.polls, password);
+
+    } catch (err) {
+      alert("Failed to close poll.");
+    }
+  };
+});
+
+// ============================================================
+// OPEN ADMIN LOGIN INSIDE POLLS MODAL
+// ============================================================
+async function openAdminLoginInModal() {
+  const modalBody = document.getElementById("polls-modal-body");
+
+  const saved = sessionStorage.getItem("adminPassword");
+  if (saved) {
+    adminLogin(saved);
+    return;
+  }
+
+  await fadeOutModal();
+
+  modalBody.innerHTML = `
+    <div class="admin-wrapper">
+      <div class="section">
+        <h2>Admin Login</h2>
+
+        <input id="admin-password"
+               type="password"
+               placeholder="Password"
+               class="themed-input">
+
+        <button id="admin-login-btn"
+                class="themed-button">
+          Login
+        </button>
+      </div>
+    </div>
+  `;
+
+  fadeInModal();
+
+  document.getElementById("admin-login-btn").onclick = handleAdminLogin;
+}
+</script>
+
+<script>
 const workerUrl = "https://mailerlite-proxy.citationgardens9.workers.dev";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1019,7 +1591,7 @@ function flashMessage(el, text, type = "success") {
 </script>
 
 <script>
-// Enhanced Active Nav Link Handler
+// Enhanced Active Nav Link Handler - Supports Polls Modal
 document.addEventListener('DOMContentLoaded', () => {
   const navLinks = document.querySelectorAll('.nav-links a');
 
@@ -1028,49 +1600,49 @@ document.addEventListener('DOMContentLoaded', () => {
     if (link) link.classList.add('active');
   }
 
-  // Click handler
+  // Click handler for all links
   navLinks.forEach(link => {
     link.addEventListener('click', function() {
       setActiveLink(this);
     });
   });
 
-  // Main function to highlight based on current URL/hash
+  // Main highlight logic for hash-based navigation
   function highlightCurrentPage() {
     const currentHash = window.location.hash;
-
     let activeSet = false;
 
     navLinks.forEach(link => {
       const href = link.getAttribute('href');
 
-      // Home link (href="#' or href="" or href="index.html" etc.)
+      // Skip polls link for hash logic
+      if (link.id === 'polls-link') return;
+
+      // Home link
       if ((href === '#' || href === '' || href === window.location.pathname) && !currentHash) {
         setActiveLink(link);
         activeSet = true;
         return;
       }
 
-      // Anchor links (#section)
+      // Anchor section links
       if (currentHash && href.endsWith(currentHash)) {
         setActiveLink(link);
         activeSet = true;
       }
     });
 
-    // Fallback: highlight Home if nothing matches
+    // Fallback to Home
     if (!activeSet) {
       const homeLink = Array.from(navLinks).find(link => 
-        link.getAttribute('href') === '#' || link.getAttribute('href') === ''
+        (link.getAttribute('href') === '#' || link.getAttribute('href') === '') && link.id !== 'polls-link'
       );
       if (homeLink) setActiveLink(homeLink);
     }
   }
 
-  // Run on initial load
+  // Run initial highlight + hash listeners
   highlightCurrentPage();
-
-  // Important: Update when Back/Forward buttons are used
   window.addEventListener('hashchange', highlightCurrentPage);
   window.addEventListener('popstate', highlightCurrentPage);
 });
@@ -1092,6 +1664,16 @@ document.addEventListener('DOMContentLoaded', () => {
     <span class="modal-close">&times;</span>
     <div id="documents-modal-body">
       <!-- Loaded dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- Polls & Surveys Modal -->
+<div id="polls-modal" class="modal">
+  <div class="modal-content">
+    <span class="modal-close">&times;</span>
+    <div id="polls-modal-body">
+      <!-- Dynamically loaded content goes here -->
     </div>
   </div>
 </div>
@@ -1128,6 +1710,20 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
   </div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+function showNotice(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+}
+</script>
 
 </body>
 </html>
