@@ -625,11 +625,11 @@ document.addEventListener("DOMContentLoaded", () => {
       charts.push(new Chart(document.getElementById('financePerformanceChart'), {
         type:'bar',
         data:{
-          labels:["Jan 2026","Feb 2026","Mar 2026"],
+          labels:["Jan 2026","Feb 2026","Mar 2026", "Apr 2026"],
           datasets:[
-            { label:"Spending",data:[45200,38150,18025.97],backgroundColor:barRed },
-            { label:"Net Change",data:[0,16195.90,-16725.97],backgroundColor:barPurple },
-            { label:"Ending Balance",data:[207131.27,212695.36,206601.20],backgroundColor:barBlue }
+            { label:"Spending",data:[45200, 38150, 18025.97, 20047.94],backgroundColor:barRed },
+            { label:"Net Change",data:[0, 16195.90, -16725.97, -20047.94],backgroundColor:barPurple },
+            { label:"Ending Balance",data:[207131.27, 212695.36, 206601.20, 186553.26],backgroundColor:barBlue }
           ]
         },
         options:{
