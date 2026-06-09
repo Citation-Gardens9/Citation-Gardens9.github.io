@@ -73,6 +73,11 @@
 
       <!-- INDIVIDUAL NEWS ITEMS BELOW -->
 	  <p class="welcome-blurb archive-item">
+        <strong>🧾 Dispatch for June 9, 2026 — June Financials Added</strong><br>
+        Updated the financials for June. These numbers are from June 1, 2026.
+      </p>
+
+	  <p class="welcome-blurb archive-item">
         <strong>🧾 Dispatch for May 23, 2026 — A Reminder</strong><br>
         As a reminder, if you’d like to get a weekly roundup of everything posted
 		here — plus notices about the quarterly newsletter, quarterly video, and our seasonal
@@ -87,16 +92,6 @@
         The May financials have been posted, reflecting account activity through May 23, 2026.
 		With bank viewing access restored, up‑to‑date account numbers will continue to be
 		published at the start of each month.
-      </p>
-
-	  <p class="welcome-blurb archive-item">
-        <strong>🧾 Dispatch for May 21, 2026 — April Financials Added</strong><br>
-        The April financials have been added to the website. The charts will now reflect the numbers
-		from January 2026 through April 2026.
-		<br><br>
-		Now that bank viewing access has finally been restored, I’ll update the financials again for
-		May after tomorrow’s meeting. From this point forward, we’ll have current, up‑to‑the‑minute
-		numbers every month.
       </p>
 
       <p class="welcome-blurb">
@@ -140,7 +135,7 @@
       <p>Financial performance, budget tracking, and other metrics will be displayed here.</p>
 
       <div class="chart-wrapper">
-        <h3>Primary Account Balances (January–May 2026)</h3>
+        <h3>Primary Account Balances (January–June 2026)</h3>
         <div class="incident-panel">
           <div class="chart-container line-container">
             <canvas id="primaryAccountsChart"></canvas>
@@ -192,7 +187,7 @@
     <!-- REMODEL PROGRESS -->
     <div id="remodel" class="section section-slide">
       <h2>Unit M-109 Remodel Progress</h2>
-      <p class="progress-label">Overall Completion: <span id="progress-value">0%</span></p>
+      <p class="progress-label" style="margin-top: -10px; margin-bottom: 0px;">Overall Completion: <span id="progress-value">0%</span></p>
       <div class="progress-bar">
         <div id="progress-fill"></div>
       </div>
@@ -538,11 +533,11 @@ document.addEventListener("DOMContentLoaded", () => {
       charts.push(new Chart(document.getElementById('primaryAccountsChart'), {
         type: 'line',
         data: {
-          labels: ["Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026"],
+          labels: ["Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026", "Jun 2026"],
           datasets: [
             {
               label: "General Reserve",
-              data: [97129.50, 103357.61, 106475.18, 89808.25, 75718.43],
+              data: [97129.50, 103357.61, 106475.18, 89808.25, 75718.43, 78829.49],
               borderColor: finBlue,
               backgroundColor: finBlue + '20',
               borderWidth: 3,
@@ -553,7 +548,7 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             {
               label: "Operating Account",
-              data: [21027.73, 30541.77, 20598.10, 17217.09, 23507.36],
+              data: [21027.73, 30541.77, 20598.10, 17217.09, 23507.36, 20553.99],
               borderColor: finGreen,
               backgroundColor: finGreen + '20',
               borderWidth: 3,
@@ -564,7 +559,7 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             {
               label: "CD Account",
-              data: [78795.98, 78795.98, 79527.92, 79527.92, 80075.02],
+              data: [78795.98, 78795.98, 79527.92, 79527.92, 80075.02, 80075.02],
               borderColor: finPurple,
               backgroundColor: finPurple + '20',
               borderWidth: 3,
@@ -622,11 +617,11 @@ document.addEventListener("DOMContentLoaded", () => {
       charts.push(new Chart(document.getElementById('financePerformanceChart'), {
         type:'bar',
         data:{
-          labels:["Jan 2026","Feb 2026","Mar 2026", "Apr 2026","May 2026"],
+          labels:["Jan 2026","Feb 2026","Mar 2026", "Apr 2026","May 2026","Jun 2026"],
           datasets:[
-            { label:"Spending",data:[45200, 38150, 18025.97, 20047.94, 14504.90],backgroundColor:barRed },
-            { label:"Net Change",data:[0, 16195.90, -16725.97, -20047.94, -7252.45],backgroundColor:barPurple },
-            { label:"Ending Balance",data:[207131.27, 212695.36, 206601.20, 186553.26, 179300.81],backgroundColor:barBlue }
+            { label:"Spending",data:[45200, 38150, 18025.97, 20047.94, 14504.90, 14504.90,],backgroundColor:barRed },
+            { label:"Net Change",data:[0, 16195.90, -16725.97, -20047.94, -7252.45, 157.69],backgroundColor:barPurple },
+            { label:"Ending Balance",data:[207131.27, 212695.36, 206601.20, 186553.26, 179300.81, 179458.50],backgroundColor:barBlue }
           ]
         },
         options:{
