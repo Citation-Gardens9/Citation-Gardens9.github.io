@@ -1546,3 +1546,65 @@ html.dark .load-more-btn:hover {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1.03);
 }
+
+/* ============================================================
+   FINANCIAL DASHBOARD — card grid
+   Uses your existing CSS variables for theme compatibility.
+   ============================================================ */
+
+.fin-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.fin-cards .card {
+  background: transparent;
+  border: 1px solid var(--border, #e2e5ea);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+}
+
+.fin-cards .card .label {
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--muted, #6b7280);
+  margin-bottom: .5rem;
+}
+
+.fin-cards .card .value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text, #1f2933);
+}
+
+.fin-cards .card .delta {
+  margin-top: .5rem;
+  font-size: .85rem;
+  font-weight: 500;
+}
+
+.fin-cards .card .delta.up   { color: var(--fin-green, #1a7f4b); }
+.fin-cards .card .delta.down { color: var(--fin-red, #c0392b); }
+.fin-cards .card .delta.flat { color: var(--muted, #6b7280); }
+
+.fin-cards .card .delta small {
+  color: var(--muted, #6b7280);
+  font-weight: 400;
+}
+
+/* Dark mode adjustments (if you don't already have --card-bg / --border) */
+/* Uncomment and adjust if your dark theme needs different card bg: */
+/*
+html.dark .fin-cards .card {
+  background: #1e1e2e;
+  border-color: #333;
+}
+html.dark .fin-cards .card .value {
+  color: #e0e0e0;
+}
+*/
