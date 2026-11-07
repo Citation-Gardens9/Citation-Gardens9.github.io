@@ -73,25 +73,7 @@
       </p>
 
       <!-- INDIVIDUAL NEWS ITEMS BELOW -->
-	  <p class="welcome-blurb archive-item">
-        <strong>🧾 Dispatch for October 8, 2026 — Financial Charts Reintroduced</strong><br>
-        I've reintroduced the financial charts to the website. The old chart javascript was clunky and
-		had to be edited by hand. Now all the financial information is pulled from a easily edited text file.
-		I'm in the process of making this static website as automated as possible and this is the first step.
-      </p>
-
-	  <p class="welcome-blurb archive-item">
-        <strong>🧾 Dispatch for October 8, 2026 — Fall Potluck</strong><br>
-        This is just a reminder that our Fall Potluck will be this weekend October 10, 2026 at 3:00 pm.
-		We will be meeting at the pool ramada unless it's raining, then we will meet in the upstairs office at M-building.
-		And remember, if you are unable to bring something, please come anyway. I always make sure to have extra.
-      </p>
-
-	  <p class="welcome-blurb archive-item">
-        <strong>🧾 Dispatch for October 8, 2026 — October Financials Added</strong><br>
-        The October financials have been added. These numbers are as of October 7, 2026.
-		You can view them below by clicking <a href="#treasurer-summary" style="text-decoration: none; color: var(--muted);"><strong>here</strong></a>.
-      </p>
+	  <div id="recent-dispatches"></div>
 
       <p class="welcome-blurb">
         <strong>🕮 See What Came Before...</strong><br>
@@ -137,6 +119,9 @@
       <div class="fin-cards" id="account-cards">
         <p class="note">Loading…</p>
       </div>
+	  
+	  <!-- Total Assets (own grid so the 3 cards above are unaffected) -->
+	  <div class="fin-cards" id="total-card"></div>
 
       <!-- Line chart -->
       <div class="chart-wrapper">
@@ -1642,15 +1627,15 @@ function showNotice(message) {
 
 <script>
 // ============================================================
-// FINANCIAL DASHBOARD — fetches CSV, renders cards + ApexCharts
+// FINANCIAL DASHBOARD — fetches CSV, renders cards + total + ApexCharts
 // ============================================================
 
 const FIN_CSV = "financials.csv";
-const FIN_COLORS = {
-  "General Reserve":  null,  // will be set from CSS var below
-  "Operating Account": null,
-  "CD Account":       null
-};
+
+// Accounts that get their own card and a line on the chart.
+// Other accounts in the CSV are included only in the Total Assets card.
+const FIN_PRIMARY = ["General Reserve", "Operating Account", "CD Account"];
+
 let finApexChart = null;
 
 function finGetColors() {
@@ -1661,7 +1646,8 @@ function finGetColors() {
     purple: css.getPropertyValue('--fin-purple').trim(),
     text:   css.getPropertyValue('--text').trim(),
     muted:  css.getPropertyValue('--muted').trim(),
-    grid:   css.getPropertyValue('--border').trim() || '#e2e5ea'
+    accent: css.getPropertyValue('--accent').trim(),
+    grid:   css.getPropertyValue('--border').trim() || css.getPropertyValue('--grid').trim() || '#e2e5ea'
   };
 }
 
@@ -1678,18 +1664,22 @@ function finParseCSV(text) {
   const lines = text.trim().split(/\r?\n/);
   const header = lines[0].split(",");
   const rows = [];
+
   for (let i = 1; i < lines.length; i++) {
     if (!lines[i].trim()) continue;
+
     const cells = lines[i].split(",");
     const row = {};
     header.forEach((h, idx) => row[h.trim()] = (cells[idx] ?? "").trim());
     rows.push(row);
   }
+
   return rows;
 }
 
 function finGroupByAccount(rows) {
   const groups = {};
+
   for (const r of rows) {
     if (!groups[r.account]) groups[r.account] = [];
     groups[r.account].push({
@@ -1697,34 +1687,49 @@ function finGroupByAccount(rows) {
       balance: parseFloat(r.balance)
     });
   }
+
   for (const acct in groups) {
     groups[acct].sort((a, b) => a.date - b.date);
   }
+
   return groups;
+}
+
+function finLatestTwo(series) {
+  return {
+    latest: series[series.length - 1] || null,
+    prev:   series.length > 1 ? series[series.length - 2] : null
+  };
 }
 
 // --- Count-up animation ---
 function finAnimate(el, end, duration = 1200) {
   const start = performance.now();
+
   function frame(now) {
     const t = Math.min((now - start) / duration, 1);
     const ease = 1 - Math.pow(1 - t, 3);
     el.textContent = finFormatUSD(end * ease);
+
     if (t < 1) requestAnimationFrame(frame);
     else el.textContent = finFormatUSD(end);
   }
+
   requestAnimationFrame(frame);
 }
 
-// --- Render cards ---
+// --- Render the 3 primary account cards (unchanged) ---
 function finRenderCards(groups) {
   const container = document.getElementById("account-cards");
+  if (!container) return;
+
   container.innerHTML = "";
 
-  for (const acct in groups) {
+  for (const acct of FIN_PRIMARY) {
     const series = groups[acct];
-    const latest = series[series.length - 1];
-    const prev = series.length > 1 ? series[series.length - 2] : null;
+    if (!series) continue;
+
+    const { latest, prev } = finLatestTwo(series);
 
     const card = document.createElement("div");
     card.className = "card";
@@ -1735,33 +1740,137 @@ function finRenderCards(groups) {
       const pct = prev.balance !== 0 ? (diff / prev.balance) * 100 : 0;
       const cls = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
       const arrow = diff > 0 ? "▲" : diff < 0 ? "▼" : "—";
-      deltaHTML = `<div class="delta ${cls}">${arrow} ${finFormatUSD(Math.abs(diff))} <small>(${pct >= 0 ? "+" : ""}${pct.toFixed(1)}% vs ${finMonthName(prev.date)})</small></div>`;
+
+      deltaHTML = `
+        <div class="delta ${cls}">
+          ${arrow} ${finFormatUSD(Math.abs(diff))}
+          <small>(${pct >= 0 ? "+" : ""}${pct.toFixed(1)}% vs ${finMonthName(prev.date)})</small>
+        </div>`;
     }
 
-    card.innerHTML = `<div class="label">${acct}</div><div class="value">$0.00</div>${deltaHTML}`;
-    container.appendChild(card);
+    card.innerHTML = `
+      <div class="label">${acct}</div>
+      <div class="value">$0.00</div>
+      ${deltaHTML}
+    `;
 
-    const valEl = card.querySelector(".value");
-    finAnimate(valEl, latest.balance);
+    container.appendChild(card);
+    finAnimate(card.querySelector(".value"), latest.balance);
   }
 }
 
-// --- Render ApexCharts line chart ---
+// --- Render full-width Total Assets card in its OWN .fin-cards grid ---
+function finRenderTotal(groups) {
+  const container = document.getElementById("total-card");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  let totalLatest = 0;
+  let totalPrev = 0;
+  const perAccount = [];
+  let prevMonthLabel = null;
+
+  for (const acct in groups) {
+    const { latest, prev } = finLatestTwo(groups[acct]);
+    const la = latest ? latest.balance : 0;
+    const pa = prev ? prev.balance : 0;
+
+    totalLatest += la;
+    totalPrev += pa;
+
+    if (prev && !prevMonthLabel) prevMonthLabel = prev.date;
+    perAccount.push({ name: acct, latestAmt: la });
+  }
+
+  const totalDelta = totalLatest - totalPrev;
+  const totalPct = totalPrev !== 0 ? (totalDelta / totalPrev) * 100 : 0;
+
+  const cls = totalDelta > 0 ? "up" : totalDelta < 0 ? "down" : "flat";
+  const arrow = totalDelta > 0 ? "▲" : totalDelta < 0 ? "▼" : "—";
+  const vsLabel = prevMonthLabel ? finMonthName(prevMonthLabel) : "N/A";
+
+  const colors = finGetColors();
+  const barBg = colors.grid;
+  const barFill = colors.accent || "#3b82f6";
+
+  const icons = {
+    "General Reserve": "💵",
+    "Operating Account": "💵",
+    "CD Account": "💵",
+    "Laundry Account": "🧺",
+    "Petty Cash Card": "💳"
+  };
+
+  const sorted = [...perAccount].sort((a, b) => b.latestAmt - a.latestAmt);
+  const maxAmt = sorted.length ? sorted[0].latestAmt : 1;
+
+  const barRows = sorted.map(a => {
+    const widthPct = maxAmt > 0 ? (a.latestAmt / maxAmt) * 100 : 0;
+    const sharePct = totalLatest > 0 ? (a.latestAmt / totalLatest) * 100 : 0;
+    const icon = icons[a.name] || "";
+
+    return `
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:170px; flex-shrink:0; display:flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          <span style="width:20px; flex-shrink:0; text-align:center;">${icon}</span>
+          <span style="overflow:hidden; text-overflow:ellipsis;">${a.name}</span>
+        </div>
+
+        <div style="flex-grow:1; height:10px; background:${barBg}; border-radius:999px; overflow:hidden;">
+          <div style="height:100%; width:${widthPct}%; border-radius:999px; background:${barFill};"></div>
+        </div>
+
+        <div style="width:170px; flex-shrink:0; text-align:right; font-size:0.78rem; font-weight:600; color:var(--text); white-space:nowrap;">
+          ${finFormatUSD(a.latestAmt)}&nbsp; (${sharePct.toFixed(1)}%)
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  const card = document.createElement("div");
+  card.className = "card";
+  card.style.gridColumn = "1 / -1";
+
+  card.innerHTML = `
+    <div class="label" style="margin-left:392px; text-align:left;">Total Assets (All Accounts)</div>
+
+    <div style="display:flex; align-items:center; gap:32px;">
+      <div style="flex-shrink:0; min-width:180px; margin-top:-24px;">
+        <div class="value">$0.00</div>
+        <div class="delta ${cls}">
+          ${arrow} ${finFormatUSD(Math.abs(totalDelta))}
+          <small>(${totalPct >= 0 ? "+" : ""}${totalPct.toFixed(1)}% vs ${vsLabel})</small>
+        </div>
+      </div>
+
+      <div style="flex:1; display:flex; flex-direction:column; gap:6px; min-width:300px;">
+        ${barRows}
+      </div>
+    </div>
+  `;
+
+  container.appendChild(card);
+  finAnimate(card.querySelector(".value"), totalLatest);
+}
+
+// --- Render ApexCharts line chart for primary accounts only ---
 function finRenderChart(groups) {
   const colors = finGetColors();
 
-  // Map accounts to your existing color variables
   const acctColors = {
     "General Reserve":  colors.blue,
     "Operating Account": colors.green,
     "CD Account":       colors.purple
   };
 
-  const series = Object.keys(groups).map(acct => ({
-    name: acct,
-    color: acctColors[acct] || "#888",
-    data: groups[acct].map(p => ({ x: p.date.getTime(), y: p.balance }))
-  }));
+  const series = FIN_PRIMARY
+    .filter(acct => groups[acct])
+    .map(acct => ({
+      name: acct,
+      color: acctColors[acct] || "#888",
+      data: groups[acct].map(p => ({ x: p.date.getTime(), y: p.balance }))
+    }));
 
   if (finApexChart) finApexChart.destroy();
 
@@ -1780,6 +1889,7 @@ function finRenderChart(groups) {
     },
 
     series: series,
+
     xaxis: {
       type: "datetime",
       labels: {
@@ -1789,28 +1899,34 @@ function finRenderChart(groups) {
       axisBorder: { color: colors.grid },
       axisTicks: { color: colors.grid }
     },
+
     yaxis: {
       labels: {
         style: { colors: colors.muted },
         formatter: v => "$" + Math.round(v / 1000) + "k"
       }
     },
+
     stroke: { curve: "smooth", width: 2.5 },
     markers: { size: 4, strokeWidth: 0 },
     dataLabels: { enabled: false },
+
     tooltip: {
       theme: "dark",
       y: { formatter: v => finFormatUSD(v) }
     },
+
     legend: {
       position: "bottom",
       labels: { colors: colors.text }
     },
+
     grid: {
       borderColor: colors.grid,
       strokeDashArray: 4
     }
   });
+
   finApexChart.render();
 }
 
@@ -1821,15 +1937,24 @@ let finGroups = null;
   try {
     const res = await fetch(FIN_CSV, { cache: "no-cache" });
     if (!res.ok) throw new Error("HTTP " + res.status);
+
     const text = await res.text();
     const rows = finParseCSV(text);
+
     finGroups = finGroupByAccount(rows);
+
     finRenderCards(finGroups);
+    finRenderTotal(finGroups);
     finRenderChart(finGroups);
+
   } catch (err) {
     console.error("Financial CSV error:", err);
+
     const el = document.getElementById("account-cards");
-    if (el) el.innerHTML = '<p class="note" style="color:var(--fin-red)">Could not load financials.csv</p>';
+    if (el) {
+      el.innerHTML = '<p class="note" style="color:var(--fin-red)">Could not load financials.csv</p>';
+    }
+
     document.getElementById("balance-chart").innerHTML =
       '<p class="note" style="padding:2rem 0">Chart unavailable.</p>';
   }
@@ -1837,11 +1962,40 @@ let finGroups = null;
 
 // --- Redraw chart on theme toggle ---
 const finObserver = new MutationObserver(() => {
-  requestAnimationFrame(() => { if (finGroups) finRenderChart(finGroups); });
+  requestAnimationFrame(() => {
+    if (finGroups) finRenderChart(finGroups);
+  });
 });
+
 finObserver.observe(document.documentElement, {
   attributes: true,
   attributeFilter: ['class', 'data-theme']
+});
+</script>
+
+<script>
+// ============================================================
+// RECENT DISPATCHES — pulls the 3 newest from news-archive.html
+// ============================================================
+document.addEventListener("DOMContentLoaded", async () => {
+  const container = document.getElementById("recent-dispatches");
+  if (!container) return;
+
+  try {
+    const res = await fetch("news-archive.html", { cache: "no-cache" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+
+    const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+    const items = Array.from(doc.querySelectorAll(".archive-item"));
+
+    if (!items.length) throw new Error("No dispatches found");
+
+    // First three in the file = three most recent (archive is newest-first).
+    items.slice(0, 3).forEach(el => container.appendChild(el.cloneNode(true)));
+  } catch (err) {
+    console.warn("Recent dispatches failed to load:", err);
+    container.innerHTML = '<p class="note">Recent dispatches unavailable.</p>';
+  }
 });
 </script>
 
