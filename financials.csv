@@ -9,6 +9,7 @@ date,account,balance
 2026-08-03,General Reserve,81149.05
 2026-09-05,General Reserve,69939.58
 2026-10-08,General Reserve,65668.03
+2026-11-03,General Reserve,56475.56
 2026-01-01,Operating Account,21027.73
 2026-02-01,Operating Account,30541.77
 2026-03-21,Operating Account,20598.10
@@ -19,6 +20,7 @@ date,account,balance
 2026-08-03,Operating Account,20771.23
 2026-09-05,Operating Account,20589.12
 2026-10-08,Operating Account,22812.39
+2026-11-03,Operating Account,17813.16
 2026-01-01,CD Account,78795.98
 2026-02-01,CD Account,78795.98
 2026-03-21,CD Account,79527.92
@@ -29,3 +31,24 @@ date,account,balance
 2026-08-03,CD Account,80612.08
 2026-09-05,CD Account,80886.39
 2026-10-08,CD Account,81161.64
+2026-11-03,CD Account,81428.89
+2026-01-01,Laundry Account,10090.88
+2026-02-01,Laundry Account,10090.88
+2026-03-21,Laundry Account,10341.88
+2026-04-21,Laundry Account,10607.88
+2026-05-21,Laundry Account,10784.88
+2026-07-13,Laundry Account,10989.38
+2026-08-03,Laundry Account,11169.38
+2026-09-05,Laundry Account,11428.88
+2026-10-08,Laundry Account,11708.38
+2026-11-03,Laundry Account,12007.88
+2026-01-01,Petty Cash Card,540.93
+2026-02-01,Petty Cash Card,540.93
+2026-03-21,Petty Cash Card,450.73
+2026-04-21,Petty Cash Card,188.66
+2026-05-21,Petty Cash Card,188.66
+2026-07-13,Petty Cash Card,133.43
+2026-08-03,Petty Cash Card,128.00
+2026-09-05,Petty Cash Card,736.72
+2026-10-08,Petty Cash Card,736.75
+2026-11-03,Petty Cash Card,419.93
